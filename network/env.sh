@@ -19,7 +19,7 @@ export E2E=1
 export NOC_WEIGHTS=1
 
 # Train and test behavior
-export EVAL_ONLY=1
-export CHECKPOINT=$HOME/Data/model_best.pth  # "none"
+export EVAL_ONLY=0
+export CHECKPOINT="none" #$HOME/Data/model_best.pth  # "none"
 export RESUME=0  # This means from last checkpoint
 export OUTPUT_DIR=output

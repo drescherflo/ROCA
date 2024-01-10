@@ -423,8 +423,8 @@ def main(args):
         scene_id = d['id_scan']
         # if scene_id not in ('scene0697_01', 'scene0356_02', 'scene0678_01'):
         #    continue
-        if scene_id != 'scene0470_00':
-            continue
+        #if scene_id != 'scene0470_00':
+        #    continue
         data_queue.put(d)
 
     if distributed:

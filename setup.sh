@@ -10,7 +10,7 @@ conda install -c pytorch pytorch=1.7.0 torchvision cudatoolkit=11.0
 conda install -c fvcore -c iopath -c conda-forge fvcore iopath
 conda install -c bottler nvidiacub
 # NOTE: Tested with 0.5 and 0.6
-conda install pytorch3d -c pytorch3d-nightly
+conda install pytorch3d -c pytorch3d
 
 # detectron2
 python -m pip install detectron2==0.3 -f \
@@ -18,3 +18,7 @@ python -m pip install detectron2==0.3 -f \
 
 # numba
 conda install numba
+
+# Downgrade Pillow and numpy after cudatoolkit upgraded them to incompatible versions
+pip uninstall Pillow numpy
+pip install Pillow==9.5.0 numpy==1.22.4

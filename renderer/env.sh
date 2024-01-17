@@ -1,7 +1,7 @@
 # A shared data folder is assumed for all datasets
 # You can modify the vatiables 
 # so different things can be stored in different places
-export BASE_DIR=$HOME/Data
+export BASE_DIR=$HOME/temp_roca_out
 
 # ScanNet25k data downloadable as a zip using the official script
 export SCANNET25K_DIR=$BASE_DIR/ScanNet25k

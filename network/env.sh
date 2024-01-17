@@ -5,13 +5,14 @@ export SEED=2021
 
 # NOTE: Change the data config based on your detup!
 # JSON files
-export DATA_DIR=$HOME/Data/Dataset
+BASE_DIR=$HOME/temp_roca_out
+export DATA_DIR=$BASE_DIR/Dataset
 # Resized images with intrinsics and poses
-export IMAGE_ROOT=$HOME/Data/Images
+export IMAGE_ROOT=$BASE_DIR/Images
 # Depths and instances rendered over images
-export RENDERING_ROOT=$HOME/Data/Rendering
+export RENDERING_ROOT=$BASE_DIR/Rendering
 # Scan2CAD Full Annotations
-export FULL_ANNOT=$HOME/Data/Scan2CAD/full_annotations.json
+export FULL_ANNOT=$BASE_DIR/Scan2CAD/full_annotations.json
 
 # Model configurations
 export RETRIEVAL_MODE=resnet_resnet+image+comp
@@ -20,6 +21,6 @@ export NOC_WEIGHTS=1
 
 # Train and test behavior
 export EVAL_ONLY=0
-export CHECKPOINT="none" #$HOME/Data/model_best.pth  # "none"
+export CHECKPOINT="none" #$BASE_DIR/model_best.pth  # "none"
 export RESUME=0  # This means from last checkpoint
 export OUTPUT_DIR=output

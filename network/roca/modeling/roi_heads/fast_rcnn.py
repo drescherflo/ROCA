@@ -55,17 +55,17 @@ class WeightedFastRCNNOutputs(FastRCNNOutputs):
             # arg to smooth_l1_loss is False (otherwise it uses torch.mean internally
             # and would produce a nan loss).
             fg_inds = nonzero_tuple((self.gt_classes >= 0) & (self.gt_classes < bg_class_ind))[0]
+            fg_gt_classes = self.gt_classes[fg_inds]
             if cls_agnostic_bbox_reg:
                 # pred_proposal_deltas only corresponds to foreground class for agnostic
                 gt_class_cols = torch.arange(box_dim, device=device)
             else:
-                fg_gt_classes = self.gt_classes[fg_inds]
                 # pred_proposal_deltas for class k are located in columns [b * k : b * k + b],
                 # where b is the dimension of box representation (4 or 5)
                 # Note that compared to Detectron1,
                 # we do not perform bounding box regression for background classes.
-                gt_class_cols = box_dim * fg_gt_classes[:, None]\
-                    + torch.arange(box_dim, device=device)
+                gt_class_cols = box_dim * fg_gt_classes[:, None] \
+                                + torch.arange(box_dim, device=device)
 
             if self.box_reg_loss_type == "smooth_l1":
                 gt_proposal_deltas = self.box2box_transform.get_deltas(
@@ -77,7 +77,7 @@ class WeightedFastRCNNOutputs(FastRCNNOutputs):
                     self.smooth_l1_beta,
                     reduction='none',
                 )
-                weights = self.class_weights[fg_gt_classes]\
+                weights = self.class_weights[fg_gt_classes] \
                     .unsqueeze(1).expand_as(loss_box_reg)
             elif self.box_reg_loss_type == "giou":
                 loss_box_reg = giou_loss(

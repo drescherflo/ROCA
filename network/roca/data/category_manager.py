@@ -3,7 +3,7 @@ from collections import Counter
 
 from detectron2.data import DatasetCatalog, MetadataCatalog
 
-from roca.data.constants import BENCHMARK_CLASSES, CAD_TAXONOMY
+from roca.data.constants import get_benchmark_classes, get_cad_taxonomy
 
 
 class CategoryManager:
@@ -32,7 +32,7 @@ class CategoryManager:
     def is_benchmark_class(self, index_or_name) -> bool:
         if not isinstance(index_or_name, str):
             index_or_name = self.get_name(index_or_name)
-        return index_or_name in BENCHMARK_CLASSES
+        return index_or_name in get_benchmark_classes()
 
     def get_name(self, index) -> str:
         idx = self._index_to_id[index]
@@ -52,8 +52,8 @@ class CategoryManager:
             for scene in data:
                 models = scene['aligned_models']
                 model_cats = (int(m['catid_cad']) for m in models)
-                model_cats = (c for c in model_cats if c in CAD_TAXONOMY)
-                model_cats = (self.get_id(CAD_TAXONOMY[c]) for c in model_cats)
+                model_cats = (c for c in model_cats if c in get_cad_taxonomy())
+                model_cats = (self.get_id(get_cad_taxonomy()[c]) for c in model_cats)
                 self.freqs.update(model_cats)
         else:
             data = DatasetCatalog.get(self.dataset_name)

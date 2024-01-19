@@ -26,8 +26,8 @@ from detectron2.structures import Instances
 
 from roca.data import CategoryCatalog
 from roca.data.constants import (
-    CAD_TAXONOMY,
-    CAD_TAXONOMY_REVERSE,
+    get_cad_taxonomy,
+    get_cad_taxonomy_reverse,
     IMAGE_SIZE,
 )
 from roca.structures import Rotations
@@ -90,7 +90,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
             ))
             alignment = []
             for model in annot['aligned_models']:
-                if int(model['catid_cad']) not in CAD_TAXONOMY:
+                if int(model['catid_cad']) not in get_cad_taxonomy():
                     continue
                 scene_counts[scene][int(model['catid_cad'])] += 1
                 mtrs = model['trs']
@@ -255,7 +255,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
         for scene, instances in results:
             data['id_scan'].extend((scene,) * len(instances))
             for c in instances.pred_classes.tolist():
-                cid = CAD_TAXONOMY_REVERSE[self._category_manager.get_name(c)]
+                cid = get_cad_taxonomy_reverse()[self._category_manager.get_name(c)]
                 data['objectCategory'].append(cid)
 
             data['alignedModelId'].extend(
@@ -377,11 +377,11 @@ class Vid2CADEvaluator(DatasetEvaluator):
             })
         else:
             corrects_per_class = Counter({
-                CAD_TAXONOMY[k]: v
+                get_cad_taxonomy()[k]: v
                 for k, v in corrects_per_class.items()
             })
             counts_per_class = Counter({
-                CAD_TAXONOMY[k]: v
+                get_cad_taxonomy()[k]: v
                 for k, v in counts_per_class.items()
             })
 

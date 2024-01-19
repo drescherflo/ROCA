@@ -9,7 +9,7 @@ from detectron2.structures import Instances
 
 from roca.config import roca_config
 from roca.data import CADCatalog
-from roca.data.constants import CAD_TAXONOMY, COLOR_BY_CLASS
+from roca.data.constants import get_cad_taxonomy, COLOR_BY_CLASS
 from roca.data.datasets import register_scan2cad
 from roca.structures import Intrinsics
 from roca.utils.alignment_errors import translation_diff
@@ -126,7 +126,7 @@ class Predictor:
             cad_id = cad_ids[i]
             if cad_id is None:
                 continue
-            if CAD_TAXONOMY[int(cad_id[0])] in excluded_classes:
+            if get_cad_taxonomy()[int(cad_id[0])] in excluded_classes:
                 continue
 
             trans_cls_scores.append((

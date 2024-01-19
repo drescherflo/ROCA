@@ -11,6 +11,7 @@ python render.py \
     --s2c_root $S2C_ROOT \
     --cad_root $SHAPENET_DIR \
     --scan_root $IMAGE_DIR/tasks/scannet_frames_25k \
+    --metadata_dir $METADATA_DIR \
     --output_json_dir $DATA_DIR \
     --output_image_dir $RENDERING_DIR \
     --num_workers $NUM_WORKERS
@@ -22,18 +23,21 @@ python rendering_to_coco.py \
     --center_filter 1 \
     --cat_repeat 1 \
     --rle 1 \
-    --rendering_root $RENDERING_DIR
+    --rendering_root $RENDERING_DIR \
+    --metadata_dir $METADATA_DIR
 
 echo "####### create_scenes"
 python create_scenes.py \
     --s2c_dir $S2C_ROOT \
     --cad_root $SHAPENET_DIR \
-    --data_dir $DATA_DIR
+    --data_dir $DATA_DIR \
+    --metadata_dir $METADATA_DIR
 
 echo "####### create_cad_db"
 python create_cad_db.py \
     --cad_root $SHAPENET_DIR \
-    --data_dir $DATA_DIR
+    --data_dir $DATA_DIR \
+    --metadata_dir $METADATA_DIR
 
 echo "####### voxelize_cads"
 python voxelize_cads.py $DATA_DIR

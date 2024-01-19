@@ -324,6 +324,7 @@ def main(args):
     parser.add_argument('--s2c_root', type=str, required=True)
     parser.add_argument('--cad_root', type=str, required=True)
     parser.add_argument('--scan_root', type=str, required=True)
+    parser.add_argument('--metadata_dir', type=str, required=True)
     parser.add_argument('--output_json_dir', type=str, required=True)
     parser.add_argument('--output_image_dir', type=str, required=True)
     parser.add_argument('--match_json', type=str, default='')
@@ -376,15 +377,15 @@ def main(args):
         used_ids = set(k.split('/')[0] for k in images.keys())
         data = [d for d in data if d['id_scan'] not in used_ids]
 
-    path = '../metadata/scan2cad_taxonomy{}.json'.format(
+    path = os.path.join(args.metadata_dir, 'scan2cad_taxonomy{}.json'.format(
         '_9' if args.taxonomy_9 else ''
-    )
+    ))
     print('Reading {}...'.format(path))
     with open(os.path.abspath(path)) as f:
         taxonomy = json.load(f)
     del path
 
-    with open(os.path.abspath('../metadata/labelids_all.txt')) as f:
+    with open(os.path.abspath(os.path.join(args.metadata_dir, 'labelids_all.txt'))) as f:
         label_ids = []
         for line in f:
             parts = line.split()

@@ -16,6 +16,7 @@ def main(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('--s2c_dir', type=str, required=True)
     parser.add_argument('--data_dir', type=str, required=True)
+    parser.add_argument('--metadata_dir', type=str, required=True)
     parser.add_argument('--export_meshes', type=int, default=0)
     parser.add_argument('--cad_root', type=str, default='none')
     parser.add_argument('--filter_vis', type=int, default=0)
@@ -52,7 +53,7 @@ def main(args):
             instances_by_scene[model_info['scene_id']].add(key)
             category_by_key[key] = instance['category_id']
 
-    with open('../metadata/scannetv2_val.txt') as f:
+    with open(os.path.join(args.metadata_dir, 'scannetv2_val.txt')) as f:
         val_scenes = set(line.strip() for line in f)
 
     # Create scenes with CAD models in the world space

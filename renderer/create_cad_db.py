@@ -46,11 +46,12 @@ def main(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('--cad_root', type=str, required=True)
     parser.add_argument('--data_dir', type=str, required=True)
+    parser.add_argument('--metadata_dir', type=str, required=True)
     args = parser.parse_args(args)
 
-    with open('../metadata/scannetv2_train.txt') as f:
+    with open(os.path.join(args.metadata_dir, 'scannetv2_train.txt')) as f:
         train_scenes = set(line.strip() for line in f)
-    with open('../metadata/scannetv2_val.txt') as f:
+    with open(os.path.join(args.metadata_dir, 'scannetv2_val.txt')) as f:
         val_scenes = set(line.strip() for line in f)
 
     try:

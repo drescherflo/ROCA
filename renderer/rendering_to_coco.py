@@ -37,6 +37,7 @@ def main(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('--alignment_json', type=str, required=True)
     parser.add_argument('--rendering_root', type=str, required=True)
+    parser.add_argument('--metadata_dir', type=str, required=True)
     parser.add_argument('--output_dir', type=str, required=True)
     parser.add_argument('--sample_scene', type=str, default='')
     parser.add_argument('--skip_val', type=int, default=100)
@@ -63,9 +64,9 @@ def main(args):
         image_infos = data['images']
         config = data['config']
 
-    path = '../metadata/scan2cad_taxonomy{}.json'.format(
+    path = os.path.join(args.metadata_dir, 'scan2cad_taxonomy{}.json'.format(
         '_9' if config.get('taxonomy_9', False) else ''
-    )
+    ))
     with open(path) as f:
         taxonomy = json.load(f)
         s2c_names = sorted([t['name'] for t in taxonomy])
@@ -77,11 +78,11 @@ def main(args):
         }
     del path
 
-    with open('../metadata/labelids.txt') as f:
+    with open(os.path.join(args.metadata_dir, 'labelids.txt')) as f:
         benchmark_names = set(line.strip().split()[-1] for line in f)
 
     if args.val_filter:
-        with open('../metadata/val_images.txt') as f:
+        with open(os.path.join(args.metadata_dir, 'val_images.txt')) as f:
             val_filter = set()
             for pair in f:
                 scene, image = pair.strip().split()
@@ -97,7 +98,7 @@ def main(args):
     val_scenes = set()
     for split_name, split_set in zip(('train', 'val'),
                                      (train_scenes, val_scenes)):
-        with open('../metadata/scannetv2_{}.txt'.format(split_name)) as f:
+        with open(os.path.join(args.metadata_dir, 'scannetv2_{}.txt'.format(split_name))) as f:
             split_set.update(line.strip() for line in f)
 
     categories = defaultdict(lambda: len(categories), benchmark_categories)

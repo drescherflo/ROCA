@@ -319,7 +319,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
                     a['sym']
                     for a in self._scene_alignments[scene]
                     if int(a['catid_cad']) == int(cat_i)
-                    and a['id_cad'] == model_i
+                    and a['id_cad'] == str(model_i)
                 )
 
                 is_dup = (
@@ -470,7 +470,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
                 a['sym']
                 for a in self._scene_alignments[scene]
                 if int(a['catid_cad']) == int(cat_i)
-                and a['id_cad'] == model_i
+                and a['id_cad'] == str(model_i)
             )
 
             match = None

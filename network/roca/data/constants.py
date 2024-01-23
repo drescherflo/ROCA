@@ -1,4 +1,5 @@
 import numpy as np
+import os
 import json
 
 
@@ -65,15 +66,17 @@ COLOR_BY_CLASS = {
 __taxonomy_cache = None
 
 
-def __read_taxonomy():
+def __read_taxonomy(metadata_dir):
     global __taxonomy_cache
-    if __taxonomy_cache is None:
-        with open("../metadata/scan2cad_taxonomy_9.json", "r") as f:
-            __taxonomy_cache = json.load(f)
+    with open(os.path.join(metadata_dir, "scan2cad_taxonomy_9.json"), "r") as f:
+        __taxonomy_cache = json.load(f)
+
+
+def load_constants(metadata_dir):
+    __read_taxonomy(metadata_dir)
 
 
 def get_all_classes():
-    __read_taxonomy()
     global __taxonomy_cache
     return tuple([taxonomy["name"] for taxonomy in __taxonomy_cache])
 
@@ -83,13 +86,11 @@ def get_benchmark_classes():
 
 
 def get_cad_taxonomy():
-    __read_taxonomy()
     global __taxonomy_cache
     return dict((int(taxonomy["shapenet"]), taxonomy["name"]) for taxonomy in __taxonomy_cache)
 
 
 def get_cad_taxonomy_reverse():
-    __read_taxonomy()
     global __taxonomy_cache
     return dict((taxonomy["name"], int(taxonomy["shapenet"])) for taxonomy in __taxonomy_cache)
 

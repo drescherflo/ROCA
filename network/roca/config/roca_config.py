@@ -9,6 +9,7 @@ from roca.modeling import ROCA, ROCAROIHeads
 def roca_config(
     train_data: str,
     test_data: str,
+    metadata_dir: str,
     batch_size: int = 2,
     num_proposals: int = 128,
     num_classes: int = 17,
@@ -71,6 +72,9 @@ def roca_config(
         anchor_clusters=anchor_clusters,
         min_anchor_size=min_anchor_size
     )
+
+    # Set metadata dir
+    cfg.METADATA_DIR = metadata_dir
 
     # Disable resizing of any kind
     cfg.INPUT.MIN_SIZE_TRAIN = min(IMAGE_SIZE)

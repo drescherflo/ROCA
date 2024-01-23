@@ -3,6 +3,7 @@
 python main.py \
     --data_dir $DATA_DIR \
     --image_root $IMAGE_ROOT \
+    --metadata_dir $METADATA_DIR \
     --full_annot $FULL_ANNOT \
     --eval_only $EVAL_ONLY \
     --rendering_root $RENDERING_ROOT \

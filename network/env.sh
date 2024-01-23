@@ -3,9 +3,10 @@ export OMP_NUM_THREADS=1
 export NUM_WORKERS=4
 export SEED=2021
 
+BASE_DIR=$HOME/custom_roca_data
+export METADATA_DIR=$BASE_DIR/metadata
 # NOTE: Change the data config based on your detup!
 # JSON files
-BASE_DIR=$HOME/temp_roca_out
 export DATA_DIR=$BASE_DIR/Dataset
 # Resized images with intrinsics and poses
 export IMAGE_ROOT=$BASE_DIR/Images

@@ -54,6 +54,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
         self,
         dataset_name: str,
         full_annot: Union[str, List[Dict[str, Any]]],
+        metadata_dir: str,
         cfg=None,
         output_dir: str = '',
         mocking: bool = False,
@@ -66,6 +67,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
         self._dataset_name = dataset_name
         self._metadata = MetadataCatalog.get(self._dataset_name)
         self._category_manager = CategoryCatalog.get(self._dataset_name)
+        self._metadata_dir = metadata_dir
 
         self.mocking = mocking
         self._output_dir = output_dir
@@ -190,6 +192,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
         return eval_csv(
             self._dataset_name,
             path,
+            self._metadata_dir,
             self._full_annots,
             exact_ret=self.exact_ret,
             prefix=self.key_prefix,
@@ -552,6 +555,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
 def eval_csv(
     dataset_name: str,
     csv_path: str,
+    metadata_dir: str,
     full_annot=None,
     grid_file=None,
     exact_ret=False,
@@ -559,11 +563,7 @@ def eval_csv(
     info_file=''
 ) -> OrderedDictType[str, Dict[str, float]]:
 
-    # FIXME: relative path!
-    eval_path = __file__
-    for i in range(4):  # -> eval -> roca -> network
-        eval_path = os.path.dirname(eval_path)
-    eval_path = os.path.join(eval_path, 'metadata', 'scannetv2_val.txt')
+    eval_path = os.path.join(metadata_dir, 'scannetv2_val.txt')
     with open(eval_path) as f:
         val_scenes = set(ln.strip() for ln in f)
 
@@ -572,6 +572,7 @@ def eval_csv(
     exclude = val_scenes.difference(scenes)
     evaluator = Vid2CADEvaluator(
         dataset_name,
+        metadata_dir=metadata_dir,
         full_annot=full_annot,
         mocking=True,
         exclude=exclude,

@@ -159,12 +159,14 @@ class Trainer(DefaultTrainer):
         v2c_eval = Vid2CADEvaluator(
             dataset_name,
             full_annot,
+            cfg.METADATA_DIR,
             cfg,
             output_dir=cfg.OUTPUT_DIR
         )
         v2c_eval_ret = Vid2CADEvaluator(
             dataset_name,
             full_annot,
+            cfg.METADATA_DIR,
             cfg,
             output_dir=cfg.OUTPUT_DIR,
             exact_ret=True,

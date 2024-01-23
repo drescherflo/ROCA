@@ -1,5 +1,6 @@
 import argparse
 import json
+import os.path
 import os.path as path
 import sys
 from os import makedirs
@@ -8,6 +9,7 @@ from roca.config import roca_config
 from roca.data import CategoryCatalog
 from roca.data.datasets import register_scan2cad
 from roca.engine import Trainer
+from roca.data.constants import load_constants
 
 
 def parse_args(args=None):
@@ -17,6 +19,8 @@ def parse_args(args=None):
     parser.add_argument('--image_root', required=True)
     parser.add_argument('--rendering_root', required=True)
     parser.add_argument('--full_annot', required=True)
+
+    parser.add_argument('--metadata_dir', required=True)
 
     parser.add_argument('--output_dir', default='./output')
     parser.add_argument('--override_output', default=0, type=int)
@@ -74,7 +78,7 @@ def register_data(args):
         name=train_name,
         split='train',
         data_dir=data_dir,
-        metadata={'scenes': path.abspath('../metadata/scannetv2_train.txt')},
+        metadata={'scenes': path.abspath(os.path.join(args.metadata_dir, 'scannetv2_train.txt'))},
         image_root=args.image_root,
         rendering_root=args.rendering_root,
         full_annot=args.full_annot,
@@ -84,7 +88,7 @@ def register_data(args):
         name=val_name,
         split='val',
         data_dir=data_dir,
-        metadata={'scenes': path.abspath('../metadata/scannetv2_val.txt')},
+        metadata={'scenes': path.abspath(os.path.join(args.metadata_dir, 'scannetv2_val.txt'))},
         image_root=args.image_root,
         rendering_root=args.rendering_root,
         full_annot=args.full_annot
@@ -127,7 +131,8 @@ def make_config(train_name, val_name, args):
         retrieval_mode=args.retrieval_mode,
         wild_retrieval=bool(args.wild_retrieval),
         confidence_thresh_test=args.confidence_thresh_test,
-        e2e=bool(args.e2e)
+        e2e=bool(args.e2e),
+        metadata_dir=args.metadata_dir
     )
 
     # NOTE: Training state will be reset in this case!
@@ -165,6 +170,7 @@ def train_or_eval(args, cfg):
 
 
 def main(args):
+    load_constants(args.metadata_dir)
     train_name, val_name = register_data(args)
     cfg = make_config(train_name, val_name, args)
     setup_output_dir(args, cfg)

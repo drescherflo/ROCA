@@ -1,7 +1,8 @@
 # A shared data folder is assumed for all datasets
 # You can modify the vatiables 
 # so different things can be stored in different places
-export BASE_DIR=$HOME/custom_roca_data
+CUSTOM_DATASET_DIR=$HOME/custom_dataset
+export BASE_DIR=$CUSTOM_DATASET_DIR/converted/6_dof/ReplicatorToRoca
 
 export METADATA_DIR=$BASE_DIR/metadata
 

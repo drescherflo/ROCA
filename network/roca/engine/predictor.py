@@ -32,7 +32,7 @@ class Predictor:
         thresh: float = 0.5,
         wild: bool = False
     ):
-        cfg = roca_config('Scan2CAD', 'Scan2CAD')
+        cfg = roca_config('Scan2CAD', 'Scan2CAD', '')
         cfg.merge_from_file(config_path)
         if wild:
             cfg.MODEL.WILD_RETRIEVAL_ON = True
@@ -126,8 +126,8 @@ class Predictor:
             cad_id = cad_ids[i]
             if cad_id is None:
                 continue
-            if get_cad_taxonomy()[int(cad_id[0])] in excluded_classes:
-                continue
+            #if get_cad_taxonomy()[int(cad_id[0])] in excluded_classes:
+            #    continue
 
             trans_cls_scores.append((
                 instances.pred_translations[i],

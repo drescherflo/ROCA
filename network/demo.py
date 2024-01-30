@@ -16,22 +16,22 @@ def main(args):
         data_dir=args.data_dir,
         model_path=args.model_path,
         config_path=args.config_path,
-        wild=args.wild,
+        wild=True,
     )
     to_file = args.output_dir != 'none'
 
-    for name, scene in zip(
-        ('3m', 'sofa', 'lab', 'desk'),
-        ('scene0474_02', 'scene0207_00', 'scene0378_02', 'scene0474_02')
-    ):
+    # for name, scene in zip(
+    #     ('3m', 'sofa', 'lab', 'desk'),
+    #     ('scene0474_02', 'scene0207_00', 'scene0378_02', 'scene0474_02')
+    # ):
+    for name in ["000000"]:
         img = Image.open(os.path.join('assets', '{}.jpg'.format(name)))
         img = np.asarray(img)
-        instances, cad_ids = predictor(img, scene=scene)
+        instances, cad_ids = predictor(img)#, scene=scene)
         meshes = predictor.output_to_mesh(
             instances,
             cad_ids,
-            # Table works poorly in the wild case due to size diversity
-            excluded_classes={'table'} if args.wild else (),
+            excluded_classes={'table'},
             as_open3d=not to_file
         )
 
@@ -65,7 +65,6 @@ if __name__ == '__main__':
     parser.add_argument('--data_dir', required=True)
     parser.add_argument('--model_path', required=True)
     parser.add_argument('--config_path', required=True)
-    parser.add_argument('--wild', action='store_true')
     parser.add_argument('--output_dir', default='none')
     args = parser.parse_args(sys.argv[1:])
     main(args)

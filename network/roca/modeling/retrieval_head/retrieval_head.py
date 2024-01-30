@@ -107,10 +107,10 @@ class RetrievalHead(nn.Module):
     ):
         self.device = device
         self.has_cads = True
-        if self.is_voxel:
-            self.points_by_class = points
-        else:
-            self.points_by_class = {k: v.to(device) for k, v in points.items()}
+        # if self.is_voxel:
+        self.points_by_class = points
+        # else:
+        #     self.points_by_class = {k: v.to(device) for k, v in points.items()}
         self.cad_ids_by_class = ids
         # self.dummy_mesh = ico_sphere()
 
@@ -148,7 +148,7 @@ class RetrievalHead(nn.Module):
         instance_sizes: Optional[List[int]] = None,
         has_alignment: Optional[Tensor] = None,
         scenes: Optional[List[str]] = None,
-        wild_retrieval: bool = False,
+        wild_retrieval: bool = True,
         pos_cads: Optional[Tensor] = None,
         neg_cads: Optional[Tensor] = None
     ) -> Union[Dict[str, Tensor], RetrievalResult]:

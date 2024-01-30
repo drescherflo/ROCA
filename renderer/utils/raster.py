@@ -13,21 +13,6 @@ except ImportError:
     o3d = None
 
 
-COLOR_BY_CLASS = {
-    # 2747177: np.array([241, 43, 16]) / 255,
-    2747177: np.array([241, 43, 16]) / 255,
-    2808440: np.array([176, 71, 241]) / 255,
-    2818832: np.array([204, 204, 255]) / 255,
-    2871439: np.array([255, 191, 0]) / 255,
-    2933112: np.array([255, 127, 80]) / 255,
-    3001627: np.array([44, 131, 242]) / 255,
-    3211117: np.array([212, 172, 23]) / 255,
-    4256520: np.array([237, 129, 241]) / 255,
-    4379243: np.array([32, 195, 182]) / 255,
-}
-COLOR_BY_CLASS_BRG = {k: v[::-1] for k, v in COLOR_BY_CLASS.items()}
-
-
 def to_o3d(meshes: Meshes, compute_normals=True, color=None):
     assert len(meshes) == 1
     assert o3d is not None, 'No open3d!'

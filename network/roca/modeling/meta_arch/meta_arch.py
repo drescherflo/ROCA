@@ -164,9 +164,10 @@ class ROCA(GeneralizedRCNN):
         retrieval_head = self.retrieval_head
 
         retrieval_head.wild_points_by_class = (
-            {k: p.to(self.device) for k, p in points.items()}
-            if retrieval_head.baseline
-            else points
+            # {k: p.to(self.device) for k, p in points.items()}
+            # if retrieval_head.baseline
+            # else points
+            points
         )
         retrieval_head.wild_ids_by_class = ids
 

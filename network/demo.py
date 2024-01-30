@@ -21,16 +21,12 @@ def main(args):
     )
     to_file = args.output_dir != 'none'
 
-    # for name, scene in zip(
-    #     ('3m', 'sofa', 'lab', 'desk'),
-    #     ('scene0474_02', 'scene0207_00', 'scene0378_02', 'scene0474_02')
-    # ):
-    for name in ["000000"]:
+    for name in ['scene0474_02', 'scene0207_00', 'scene0378_02', 'scene0474_02']:
         img = Image.open(os.path.join('assets', '{}.jpg'.format(name)))
         img = np.asarray(img)
-        instances, cad_ids = predictor(img)#, scene=scene)
+        instances, cad_ids = predictor(img)
 
-        instances.pred_scales = torch.from_numpy(np.ones((len(instances), 3)))
+        # instances.pred_scales = torch.from_numpy(np.ones((len(instances), 3)))
         meshes = predictor.output_to_mesh(
             instances,
             cad_ids,

@@ -9,6 +9,7 @@ from trimesh.exchange.export import export_mesh
 from trimesh.util import concatenate as stack_meshes
 
 from roca.engine import Predictor
+import torch
 
 
 def main(args):
@@ -28,6 +29,8 @@ def main(args):
         img = Image.open(os.path.join('assets', '{}.jpg'.format(name)))
         img = np.asarray(img)
         instances, cad_ids = predictor(img)#, scene=scene)
+
+        instances.pred_scales = torch.from_numpy(np.ones((len(instances), 3)))
         meshes = predictor.output_to_mesh(
             instances,
             cad_ids,

@@ -22,7 +22,7 @@ def main(args):
     to_file = args.output_dir != 'none'
 
     for name, intrinsics in zip(
-            ['scene0474_02', 'scene0207_00', 'scene0378_02', 'scene0474_02'],
+            ['3m', 'desk', 'lab', 'sofa'],
             [
                 np.array([[435., 0., 240.], [0., 435., 180.], [0., 0., 1.]]),
                 np.array([[435., 0., 240.], [0., 435., 180.], [0., 0., 1.]]),

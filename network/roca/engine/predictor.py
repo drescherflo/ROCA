@@ -30,7 +30,7 @@ class Predictor:
         model_path: str,
         config_path: str,
         thresh: float = 0.5,
-        wild: bool = False
+        wild: bool = True
     ):
         cfg = roca_config('Scan2CAD', 'Scan2CAD', '')
         cfg.merge_from_file(config_path)

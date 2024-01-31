@@ -99,7 +99,7 @@ class Predictor:
             np.ascontiguousarray(image_rgb[:, :, ::-1].transpose(2, 0, 1))
         )
         if isinstance(f, np.ndarray):
-            inputs['intrinsics'] = f[:3, :3]
+            inputs['intrinsics'] = Intrinsics(torch.from_numpy(f[:3, :3]).to(dtype=torch.float32))
         else:
             inputs['intrinsics'] = Intrinsics(torch.tensor([
                 [f, 0., image_rgb.shape[1] / 2],

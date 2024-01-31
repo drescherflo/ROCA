@@ -21,16 +21,23 @@ def main(args):
     )
     to_file = args.output_dir != 'none'
 
-    for name in ['scene0474_02', 'scene0207_00', 'scene0378_02', 'scene0474_02']:
+    for name, intrinsics in zip(
+            ['scene0474_02', 'scene0207_00', 'scene0378_02', 'scene0474_02'],
+            [
+                np.array([[435., 0., 240.], [0., 435., 180.], [0., 0., 1.]]),
+                np.array([[435., 0., 240.], [0., 435., 180.], [0., 0., 1.]]),
+                np.array([[435., 0., 240.], [0., 435., 180.], [0., 0., 1.]]),
+                np.array([[435., 0., 240.], [0., 435., 180.], [0., 0., 1.]]),
+            ]
+    ):
         img = Image.open(os.path.join('assets', '{}.jpg'.format(name)))
         img = np.asarray(img)
-        instances, cad_ids = predictor(img)
+        instances, cad_ids = predictor(img, intrinsics)
 
         # instances.pred_scales = torch.from_numpy(np.ones((len(instances), 3)))
         meshes = predictor.output_to_mesh(
             instances,
             cad_ids,
-            excluded_classes={'table'},
             as_open3d=not to_file
         )
 

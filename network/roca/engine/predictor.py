@@ -115,7 +115,6 @@ class Predictor:
         instances: Instances,
         cad_ids: List[Tuple[str, str]],
         min_dist_3d: float = 0.4,
-        excluded_classes: Iterable[str] = (),
         nms_3d: bool = True,
         as_open3d: bool = False
     ) -> Union[List[trimesh.Trimesh], List[Any]]:
@@ -126,8 +125,6 @@ class Predictor:
             cad_id = cad_ids[i]
             if cad_id is None:
                 continue
-            #if get_cad_taxonomy()[int(cad_id[0])] in excluded_classes:
-            #    continue
 
             trans_cls_scores.append((
                 instances.pred_translations[i],

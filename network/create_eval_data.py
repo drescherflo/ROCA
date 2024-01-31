@@ -4,10 +4,12 @@ import argparse
 import sys
 import time
 import json
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
+import torch
 from PIL import Image
+from detectron2.structures import Instances
 
 from roca.engine.predictor import Predictor
 
@@ -48,6 +50,18 @@ def read_intrinsics_file(file_path: str) -> np.ndarray:
     return intrinsics
 
 
+def save_image_with_object_masks(image: Image, image_file_name, predictor: Predictor, instances: Instances, cad_ids: List[Tuple[str, str]], out_dir: str, force_scale_1: bool = False) -> None:
+    out_file_name = image_file_name.replace(".jpg", "_object_mask_forced_scale.jpg") if force_scale_1 else image_file_name.replace(".jpg", "_object_mask.jpg")
+    if force_scale_1:
+        instances.pred_scales = torch.from_numpy(np.ones((len(instances), 3)))
+    meshes = predictor.output_to_mesh(instances, cad_ids)
+    rendering, ids = predictor.render_meshes(meshes)
+    mask = ids > 0
+    overlay = image.copy()
+    overlay[mask] = np.clip(0.8 * rendering[mask] * 255 + 0.2 * overlay[mask], 0, 255).astype(np.uint8)
+    Image.fromarray(overlay).save(os.path.join(out_dir, out_file_name))
+
+
 def main(argv) -> None:
     # Parse Args
     parser = argparse.ArgumentParser()
@@ -57,6 +71,7 @@ def main(argv) -> None:
     parser.add_argument("--data_dir", "Path to the directory with cad database files, etc. created by the ROCA renderer during training preprocessing", required=True)
     parser.add_argument("--out_file", help="Path to the output file", required=True)
     parser.add_argument("--confidence_threshold", help="Confidence threshold for determining whether a detected object is returned or not", default=0.5, type=float)
+    parser.add_argument("--image_out_dir", help="Specifies the directory where the input images with rendered object masks will be saved", required=True)
     args = parser.parse_args(argv)
 
     # Test if relevant directories and files exist
@@ -89,6 +104,9 @@ def main(argv) -> None:
     # Load image files
     image_paths = get_image_files(args.input_dir)
 
+    # Create image out dir
+    os.makedirs(args.image_out_dir, exist_ok=True)
+
     # Run per frame evaluation
     per_frame_results = []
     for image_path in image_paths:
@@ -113,14 +131,20 @@ def main(argv) -> None:
                 "semantic_label": labels[instances.pred_classes[i]]
             })
 
+        image_file_name = os.path.basename(image_path)
         frame_results = {
-            "image": os.path.basename(image_path),
+            "image": image_file_name,
             "instances": per_object_instances,
             "inference_start_time": start_time,
             "inference_end_time": end_time
         }
 
         per_frame_results.append(frame_results)
+
+        # Create images with object masks
+        if predictor.can_render:
+            save_image_with_object_masks(image, image_file_name, predictor, instances, cad_ids, args.image_out_dir)
+            save_image_with_object_masks(image, image_file_name, predictor, instances, cad_ids, args.image_out_dir, force_scale_1=True)
 
     # Save results
     os.makedirs(os.path.dirname(args.out_file), exist_ok=True)

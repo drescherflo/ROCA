@@ -17,6 +17,7 @@ from typing import (
 import numpy as np
 import quaternion  # noqa: F401
 import torch
+import pandas as pd
 from pandas import DataFrame, read_csv
 from tabulate import tabulate
 
@@ -392,7 +393,7 @@ class Vid2CADEvaluator(DatasetEvaluator):
         # import pdb; pdb.set_trace()
         for cat in counts_per_class.keys():
             accuracies[cat] = np.round(
-                100 * corrects_per_class[cat] / counts_per_class[cat],
+                100 * corrects_per_class[cat] / counts_per_class[cat] if counts_per_class[cat] != 0 else 0,
                 decimals=1
             )
 
@@ -410,17 +411,20 @@ class Vid2CADEvaluator(DatasetEvaluator):
         ])
         instance_average = 100 * (
             sum(corrects_per_class.values()) / sum(counts_per_class.values())
-        )
+        ) if sum(counts_per_class.values()) != 0 else 0
 
-        instance_benchmark_average = 100 * (
-            sum(
-                val for cat, val in corrects_per_class.items()
-                if self._category_manager.is_benchmark_class(cat)
-            ) / sum(
-                val for cat, val in counts_per_class.items()
-                if self._category_manager.is_benchmark_class(cat)
+        try:
+            instance_benchmark_average = 100 * (
+                sum(
+                    val for cat, val in corrects_per_class.items()
+                    if self._category_manager.is_benchmark_class(cat)
+                ) / sum(
+                    val for cat, val in counts_per_class.items()
+                    if self._category_manager.is_benchmark_class(cat)
+                )
             )
-        )
+        except ZeroDivisionError:
+            instance_benchmark_average = 0
 
         metrics = OrderedDict({
             'category': np.round(category_average, decimals=1),
@@ -567,8 +571,12 @@ def eval_csv(
     with open(eval_path) as f:
         val_scenes = set(ln.strip() for ln in f)
 
-    data = read_csv(csv_path)
-    scenes = data['id_scan'].unique()
+    try:
+        data = read_csv(csv_path)
+        scenes = data['id_scan'].unique()
+    except pd.errors.EmptyDataError:
+        print('Warning: raw_results.csv has no data / no predictions')
+        scenes = []
     exclude = val_scenes.difference(scenes)
     evaluator = Vid2CADEvaluator(
         dataset_name,

@@ -18,7 +18,7 @@ python main.py \
     --augment 1 \
     --noc_weights $NOC_WEIGHTS \
     --custom_noc_weights $NOC_WEIGHTS \
-    --wild_retrieval 0 \
+    --wild_retrieval 1 \
     --steps 60000 \
     --retrieval_mode $RETRIEVAL_MODE \
     --e2e $E2E \

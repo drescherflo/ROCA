@@ -285,6 +285,16 @@ class Vid2CADEvaluator(DatasetEvaluator):
         frame.to_csv(output_path, index=False)
         return output_path
 
+    def find_sym_in_all_alignments(self, cat_i, model_i):
+        # Iterate through every scene alignments
+        for scene in self._scene_alignments.values():
+            # Iterate through every object
+            for object in scene:
+                # Check for matching ids
+                if int(object['catid_cad']) == int(cat_i) and object['id_cad'] == str(model_i):
+                    return object['sym']
+        raise ValueError(f'No object with cad id {cat_i} and model id {model_i} in scene alignments')
+
     def _nms_results(self):
         print('INFO: Removing duplicate results...', flush=True)
 
@@ -319,12 +329,16 @@ class Vid2CADEvaluator(DatasetEvaluator):
                     model_i = object_ids[instances.model_indices[i].item()]
                 else:
                     cat_i, model_i = object_ids[i]
-                sym = next(
-                    a['sym']
-                    for a in self._scene_alignments[scene]
-                    if int(a['catid_cad']) == int(cat_i)
-                    and a['id_cad'] == str(model_i)
-                )
+
+                try:
+                    sym = next(
+                        a['sym']
+                        for a in self._scene_alignments[scene]
+                        if int(a['catid_cad']) == int(cat_i)
+                        and a['id_cad'] == str(model_i)
+                    )
+                except StopIteration:
+                    sym = self.find_sym_in_all_alignments(cat_i, model_i)
 
                 is_dup = (
                     translation_diff(pred_trans[i], pred_trans[j]) <= NMS_TRANS

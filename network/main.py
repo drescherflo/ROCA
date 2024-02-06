@@ -99,7 +99,6 @@ def register_data(args):
 
 
 def make_config(train_name, val_name, args):
-    force_retrieval_mode_first_if_necessary(args)
     cfg = roca_config(
         train_data=train_name,
         test_data=val_name,
@@ -142,16 +141,6 @@ def make_config(train_name, val_name, args):
         cfg.MODEL.WEIGHTS = args.checkpoint
 
     return cfg
-
-
-def force_retrieval_mode_first_if_necessary(args):
-    with open(path.join(args.data_dir, 'scan2cad_train_cads.pkl'), 'rb') as f:
-        cads = pickle.load(f)
-    if len(cads) == 1:
-        # Only one CAD model -> retrieval cannot be learned
-        print("Warning! Found only one CAD model. Forcing retrieval mode 'first'.")
-        args.retrieval_mode = "first"
-
 
 
 def setup_output_dir(args, cfg):

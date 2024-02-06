@@ -17,7 +17,7 @@ export RENDERING_ROOT=$BASE_DIR/Rendering
 export FULL_ANNOT=$BASE_DIR/Scan2CAD/full_annotations.json
 
 # Model configurations
-export RETRIEVAL_MODE=resnet_resnet+image+comp
+export RETRIEVAL_MODE=first  # resnet_resnet+image+comp
 export E2E=1
 export NOC_WEIGHTS=1
 

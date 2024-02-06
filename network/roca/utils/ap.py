@@ -7,7 +7,7 @@ def compute_ap(scores, labels, npos, device=None):
         device = scores.device
 
     if len(scores) == 0:
-        return 0.0
+        return torch.tensor(0.0)
     tp = labels == 1
     fp = labels == 0
     sc = scores

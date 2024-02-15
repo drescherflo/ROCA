@@ -9,7 +9,7 @@ from detectron2.structures import Instances
 
 from roca.config import roca_config
 from roca.data import CADCatalog
-from roca.data.constants import get_cad_taxonomy
+from roca.data.constants import MESH_COLORS
 from roca.data.datasets import register_scan2cad
 from roca.structures import Intrinsics
 from roca.utils.alignment_errors import translation_diff
@@ -145,7 +145,7 @@ class Predictor:
             )
             mesh.apply_transform(self.scene_rot @ trs)
 
-            color = np.array([210, 43, 16]) / 255
+            color = MESH_COLORS[int(cad_id[0]) % len(MESH_COLORS)]
             if as_open3d:
                 mesh = mesh.as_open3d
                 mesh.paint_uniform_color(color)

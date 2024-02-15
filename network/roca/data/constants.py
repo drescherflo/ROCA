@@ -15,6 +15,18 @@ IMAGE_SIZE = (360, 480)
 
 VOXEL_RES = (32, 32, 32)
 
+MESH_COLORS = [
+    np.array([210, 43, 16]) / 255,
+    np.array([176, 71, 241]) / 255,
+    np.array([204, 204, 255]) / 255,
+    np.array([255, 191, 0]) / 255,
+    np.array([255, 127, 80]) / 255,
+    np.array([44, 131, 242]) / 255,
+    np.array([212, 172, 23]) / 255,
+    np.array([237, 129, 241]) / 255,
+    np.array([32, 195, 182]) / 255
+]
+
 __taxonomy_cache = None
 
 

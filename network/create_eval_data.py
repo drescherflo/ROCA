@@ -50,12 +50,12 @@ def read_intrinsics_file(file_path: str) -> np.ndarray:
     return intrinsics
 
 
-def save_image_with_object_masks(image: Image, image_file_name, predictor: Predictor, instances: Instances, cad_ids: List[Tuple[str, str]], out_dir: str, force_scale_1: bool = False) -> None:
+def save_image_with_object_masks(image: np.ndarray, intrinsics: np.ndarray, image_file_name, predictor: Predictor, instances: Instances, cad_ids: List[Tuple[str, str]], out_dir: str, force_scale_1: bool = False) -> None:
     out_file_name = image_file_name.replace(".jpg", "_object_mask_forced_scale.jpg") if force_scale_1 else image_file_name.replace(".jpg", "_object_mask.jpg")
     if force_scale_1:
         instances.pred_scales = torch.from_numpy(np.ones((len(instances), 3)))
     meshes = predictor.output_to_mesh(instances, cad_ids)
-    rendering, ids = predictor.render_meshes(meshes)
+    rendering, ids = predictor.render_meshes(meshes, image.shape[1], image.shape[0], intrinsics)
     mask = ids > 0
     overlay = image.copy()
     overlay[mask] = np.clip(0.8 * rendering[mask] * 255 + 0.2 * overlay[mask], 0, 255).astype(np.uint8)
@@ -143,8 +143,8 @@ def main(argv) -> None:
 
         # Create images with object masks
         if predictor.can_render:
-            save_image_with_object_masks(image, image_file_name, predictor, instances, cad_ids, args.image_out_dir)
-            save_image_with_object_masks(image, image_file_name, predictor, instances, cad_ids, args.image_out_dir, force_scale_1=True)
+            save_image_with_object_masks(image, intrinsics, image_file_name, predictor, instances, cad_ids, args.image_out_dir)
+            save_image_with_object_masks(image, intrinsics, image_file_name, predictor, instances, cad_ids, args.image_out_dir, force_scale_1=True)
 
     # Save results
     os.makedirs(os.path.dirname(args.out_file), exist_ok=True)

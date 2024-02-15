@@ -169,13 +169,13 @@ class Predictor:
         return meshes
 
     def render_meshes(
-        self, meshes: Union[List[trimesh.Trimesh], List[Any]], f: float = 435.,
+        self, meshes: Union[List[trimesh.Trimesh], List[Any]], img_weight: int, img_height:int, intrinsics: np.ndarray,
     ) -> Tuple[np.ndarray, np.ndarray]:
         if Rasterizer is None:
             raise ImportError('scan2cad-rasterizer not installed')
 
         inv_rot = np.linalg.inv(self.scene_rot)
-        raster = Rasterizer(480, 360, f, f, 240., 180, False, True)
+        raster = Rasterizer(img_weight, img_height, intrinsics[0, 0], intrinsics[1, 1], intrinsics[0, 2], intrinsics[1, 2], False, True)
         colors = {}
         for i, mesh in enumerate(meshes[:-1], start=1):
             if isinstance(mesh, trimesh.Trimesh):

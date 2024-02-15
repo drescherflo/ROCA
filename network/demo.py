@@ -45,7 +45,7 @@ def main(args):
             os.makedirs(args.output_dir, exist_ok=True)
 
         if predictor.can_render:
-            rendering, ids = predictor.render_meshes(meshes)
+            rendering, ids = predictor.render_meshes(meshes, img.shape[1], img.shape[0], intrinsics)
             mask = ids > 0
             overlay = img.copy()
             overlay[mask] = np.clip(

@@ -54,7 +54,7 @@ def save_image_with_object_masks(image: np.ndarray, intrinsics: np.ndarray, imag
     out_file_name = image_file_name.replace(".jpg", "_object_mask_forced_scale.jpg") if force_scale_1 else image_file_name.replace(".jpg", "_object_mask.jpg")
     if force_scale_1:
         instances.pred_scales = torch.from_numpy(np.ones((len(instances), 3)))
-    meshes = predictor.output_to_mesh(instances, cad_ids)
+    meshes = predictor.output_to_mesh(instances, cad_ids, nms_3d=False)
     rendering, ids = predictor.render_meshes(meshes, image.shape[1], image.shape[0], intrinsics)
     mask = ids > 0
     overlay = image.copy()

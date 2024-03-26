@@ -68,7 +68,7 @@ def main(argv) -> None:
     parser.add_argument("--input_dir", help="Directory with test images and corresponding camera intrinsics", required=True)
     parser.add_argument("--model", help="Path to trained model", required=True)
     parser.add_argument("--model_config", help="Path to the model's config file", required=True)
-    parser.add_argument("--data_dir", "Path to the directory with cad database files, etc. created by the ROCA renderer during training preprocessing", required=True)
+    parser.add_argument("--data_dir", help="Path to the directory with cad database files, etc. created by the ROCA renderer during training preprocessing", required=True)
     parser.add_argument("--out_file", help="Path to the output file", required=True)
     parser.add_argument("--confidence_threshold", help="Confidence threshold for determining whether a detected object is returned or not", default=0.5, type=float)
     parser.add_argument("--image_out_dir", help="Specifies the directory where the input images with rendered object masks will be saved", required=True)
@@ -102,7 +102,7 @@ def main(argv) -> None:
     predictor = Predictor(args.data_dir, args.model, args.model_config, confidence_threshold)
 
     # Load image files
-    image_paths = get_image_files(args.input_dir)
+    image_paths = sorted(get_image_files(args.input_dir))
 
     # Create image out dir
     os.makedirs(args.image_out_dir, exist_ok=True)
@@ -110,6 +110,8 @@ def main(argv) -> None:
     # Run per frame evaluation
     per_frame_results = []
     for image_path in image_paths:
+        print(f"Processing image {image_path} ...")
+
         # Load image
         image = np.asarray(Image.open(image_path))
 
@@ -125,9 +127,9 @@ def main(argv) -> None:
         per_object_instances = []
         for i in range(len(instances)):
             per_object_instances.append({
-                "scale": instances.pred_scales[i],
-                "translation": instances.pred_translations[i],
-                "rotation": instances.pred_rotations[i],
+                "scale": instances.pred_scales[i].tolist(),
+                "translation": instances.pred_translations[i].tolist(),
+                "rotation": instances.pred_rotations[i].tolist(),
                 "semantic_label": labels[instances.pred_classes[i]]
             })
 
@@ -146,10 +148,18 @@ def main(argv) -> None:
             save_image_with_object_masks(image, intrinsics, image_file_name, predictor, instances, cad_ids, args.image_out_dir)
             save_image_with_object_masks(image, intrinsics, image_file_name, predictor, instances, cad_ids, args.image_out_dir, force_scale_1=True)
 
+    results = {
+        "input_dir": args.input_dir,
+        "confidence_threshold": confidence_threshold,
+        "per_frame_results": per_frame_results
+    }
+
     # Save results
-    os.makedirs(os.path.dirname(args.out_file), exist_ok=True)
+    out_dir_name = os.path.dirname(args.out_file)
+    if out_dir_name != "":
+        os.makedirs(out_dir_name, exist_ok=True)
     with open(args.out_file, "w") as f:
-        json.dump(per_frame_results, f, indent=4)
+        json.dump(results, f, indent=4)
 
 
 if __name__ == '__main__':

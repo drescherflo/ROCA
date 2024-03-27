@@ -2,7 +2,7 @@
 # You can modify the vatiables 
 # so different things can be stored in different places
 CUSTOM_DATASET_DIR=$HOME/custom_dataset
-export BASE_DIR=$CUSTOM_DATASET_DIR/converted/6_dof/ReplicatorToRoca
+export BASE_DIR=$CUSTOM_DATASET_DIR/converted/conveyor_belt/ReplicatorToRoca
 
 export METADATA_DIR=$BASE_DIR/metadata
 

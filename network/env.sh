@@ -5,7 +5,7 @@ export SEED=2021
 
 # NOTE: Change the data config based on your detup!
 CUSTOM_DATASET_DIR=$HOME/custom_dataset
-BASE_DIR=$CUSTOM_DATASET_DIR/converted/6_dof/ReplicatorToRoca
+BASE_DIR=$CUSTOM_DATASET_DIR/converted/conveyor_belt/ReplicatorToRoca
 export METADATA_DIR=$BASE_DIR/metadata
 # JSON files
 export DATA_DIR=$BASE_DIR/Dataset

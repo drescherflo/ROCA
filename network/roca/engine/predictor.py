@@ -107,7 +107,7 @@ class Predictor:
                 [0., 0., 1.]
             ]))
         outputs = self.model([inputs])[0]
-        cad_ids = outputs['wild_cad_ids'] if self.wild else outputs['cad_ids']
+        cad_ids = outputs['wild_cad_ids'] if self.wild and 'wild_cad_ids' in outputs else outputs['cad_ids']
         return outputs['instances'].to('cpu'), cad_ids
 
     def output_to_mesh(
